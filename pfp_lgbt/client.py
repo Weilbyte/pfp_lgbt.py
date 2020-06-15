@@ -21,7 +21,7 @@ class Client(object):
             response = self.throttle.chew(Request(endpoint, 'GET'))
             return handleIcon(response)
         return endpoint
-    
+
     def imageStatic(self, image, itype, istyle, flag='pride', iformat='png', output_file=None):
         endpoint = f'{self.host}/image/static/{itype}/{istyle}/{flag}.{iformat}'
         if itype not in types:

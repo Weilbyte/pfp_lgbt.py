@@ -3,5 +3,6 @@ __author__ = 'Weilbyte'
 __license__ = 'MIT'
 __version__ = '0.0.1'
 
-from .client import Client
-from .models import Flag
+from .client import Client # noqa
+from .models import Flag # noqa
+from .error import UnsupportedMIMEError, ConvertImageError # noqa

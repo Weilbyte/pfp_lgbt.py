@@ -1,8 +1,6 @@
 import time
 import requests
 
-from .models import Request
-
 class RequestThrottle(object):
     def __init__(self, user_agent):
         self.rateLimit = 2
