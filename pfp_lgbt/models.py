@@ -13,7 +13,7 @@ class Flag(object):
         self.tooltip = tooltip
         self.image = image
 
-types = {'circle', 'overlay', 'square', 'background'}
+types = {'circle', 'overlay', 'square'}
 styles = {'solid', 'gradient'}
 formats = {'png', 'jpg'}
 mimes = {'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg'}
