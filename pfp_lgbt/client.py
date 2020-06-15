@@ -1,5 +1,5 @@
 from .throttle import RequestThrottle
-from .models import Request, types, styles, formats
+from .models import Request, types, atypes, styles, formats
 from .handlers import handleFlags, handleIconBytes, handleImageStatic
 from .util import imageToByte
 
@@ -77,6 +77,30 @@ class Client(object):
             raise ValueError(f'imageStatic: istyle must be one of {styles}')
         if iformat not in formats:
             raise ValueError(f'imageStatic: iformat must be one of {formats}')
+        files = {
+            'file' : imageToByte(image)
+        }
+        response = response = self.throttle.chew(Request(endpoint, 'POST', None, files))
+        return handleImageStatic(response, output_file)
+
+    def imageAnimated(self, image, itype, flag, output_file=None):
+        """Generates an animated pride image from the API.
+
+        Args:
+            image (string): The bytes, URL link or path of the input image.
+            itype (string): The output image type. Can be either 'circle' or 'square'.
+            flag (Flag): The Flag to create the image with.
+            output_file (string, optional): If not None, the output image will also be created under this path. Defaults to None.
+
+        Raises:
+            ValueError: Wrong value inserted for 'itype'.
+
+        Returns:
+            bytes: The output image in bytes.
+        """
+        endpoint = f'{self.host}/image/animated/{itype}/{flag.name}'
+        if itype not in atypes:
+            raise ValueError(f'imageAnimated: itype must be one of {atypes}')
         files = {
             'file' : imageToByte(image)
         }

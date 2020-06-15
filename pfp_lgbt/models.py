@@ -29,6 +29,7 @@ class Flag(object):
         self.image = image
 
 types = {'circle', 'overlay', 'square', 'background'}
+atypes = { 'circle', 'square' }
 styles = {'solid', 'gradient'}
 formats = {'png', 'jpg'}
 mimes = {'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg'}
