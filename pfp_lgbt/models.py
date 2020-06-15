@@ -1,5 +1,5 @@
 class Request(object):
-    def __init__(self, endpoint, headers, method, body, files):
+    def __init__(self, endpoint, method, body=None, files=None):
         self.endpoint = endpoint
         self.method = method
         self.body = body

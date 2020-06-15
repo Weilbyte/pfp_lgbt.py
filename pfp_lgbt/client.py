@@ -1,7 +1,5 @@
-from ratelimit import limits
-
 from .throttle import RequestThrottle
-from .models import Request, Flag, types, styles, formats
+from .models import Request, types, styles, formats
 from .handlers import handleFlags, handleIcon, handleImageStatic
 from .util import imageToByte
 
@@ -14,21 +12,21 @@ class Client(object):
 
     def flags(self):
         endpoint = f'{self.host}/flags'
-        response = self.throttle.chew(Request(endpoint, 'GET', None, None))
+        response = self.throttle.chew(Request(endpoint, 'GET'))
         return handleFlags(response, self.host)
 
     def icon(self, flag, byte=False):
         endpoint = f'{self.host}/icon/{flag.name}'
-        if base64 is not False:
-            response = self.throttle.chew(Request(endpoint, 'GET', None, None))
+        if byte is not False:
+            response = self.throttle.chew(Request(endpoint, 'GET'))
             return handleIcon(response)
         return endpoint
     
     def imageStatic(self, image, itype, istyle, flag='pride', iformat='png', output_file=None):
         endpoint = f'{self.host}/image/static/{itype}/{istyle}/{flag}.{iformat}'
-        if itype not in types: 
+        if itype not in types:
             raise ValueError(f'imageStatic: itype must be one of {types}')
-        if istyle not in styles: 
+        if istyle not in styles:
             raise ValueError(f'imageStatic: istyle must be one of {styles}')
         if iformat not in formats:
             raise ValueError(f'imageStatic: iformat must be one of {formats}')

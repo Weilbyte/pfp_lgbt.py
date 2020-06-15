@@ -1,7 +1,6 @@
 import time
 import requests
 
-from . import models 
 from .models import Request
 
 class RequestThrottle(object):
@@ -13,7 +12,7 @@ class RequestThrottle(object):
             'User-Agent': user_agent,
             'Accept': '*/*'
         }
-    
+
     def __updateRatelimit(self, headers):
         if (('X-Ratelimit-Limit' in headers) and ('X-Ratelimit-Remaining' in headers) and ('X-Ratelimit-Reset' in headers)):
             self.rateLimit = int(headers['X-Ratelimit-Limit'])
@@ -24,10 +23,10 @@ class RequestThrottle(object):
         if ((time.time() - self.rateReset) > 0):
             self.rateRemaining = self.rateLimit
         if (self.rateRemaining > 0):
-            return False 
+            return False
         return True
 
-    def chew(self, request): 
+    def chew(self, request):
         if (self.__isLimited()):
             time.sleep(0.1)
             return self.chew(request)
