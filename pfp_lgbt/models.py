@@ -7,8 +7,9 @@ class Request(object):
         self.files = files
 
 class Flag(object):
-    def __init__(self, name, default_alpha, tooltip):
+    def __init__(self, name, default_alpha=255, tooltip=None, image=None):
         self.name = name 
         self.default_alpha = default_alpha
         self.tooltip = tooltip
+        self.image = image
 
