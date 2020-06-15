@@ -5,10 +5,14 @@ from . import models
 from .models import Request
 
 class RequestThrottle(object):
-    def __init__(self):
+    def __init__(self, user_agent):
         self.rateLimit = 2
         self.rateRemaining = 2
         self.rateReset = 0
+        self.headers = {
+            'User-Agent': user_agent,
+            'Accept': '*/*'
+        }
     
     def __updateRatelimit(self, headers):
         if (('X-Ratelimit-Limit' in headers) and ('X-Ratelimit-Remaining' in headers) and ('X-Ratelimit-Reset' in headers)):
@@ -28,8 +32,8 @@ class RequestThrottle(object):
             time.sleep(0.1)
             return self.chew(request)
         else:
-            response = requests.request(request.method, headers=request.headers, url=request.endpoint, data=request.body, files=request.files)
+            response = requests.request(request.method, headers=self.headers, url=request.endpoint, data=request.body, files=request.files)
             self.__updateRatelimit(response.headers)
-            if response.status_code > 299 or response.status_code < 200:
+            if response.status_code != 200:
                 response.raise_for_status()
             return response
