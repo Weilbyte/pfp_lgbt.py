@@ -30,4 +30,6 @@ class RequestThrottle(object):
         else:
             response = requests.request(request.method, headers=request.headers, url=request.endpoint, data=request.body, files=request.files)
             self.__updateRatelimit(response.headers)
+            if response.status_code > 299 or response.status_code < 200:
+                response.raise_for_status()
             return response
