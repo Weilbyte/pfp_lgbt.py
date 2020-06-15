@@ -1,4 +1,5 @@
 from .models import Flag
+from .util import byteToImageFile
 
 def handleFlags(response, host):
     json = response.json()
@@ -9,6 +10,11 @@ def handleFlags(response, host):
     return flags
 
 def handleIcon(response):
+    return response.content
+
+def handleImageStatic(response, file_output):
+    if file_output is not None:
+        byteToImageFile(response.content, file_output)
     return response.content
 
     
