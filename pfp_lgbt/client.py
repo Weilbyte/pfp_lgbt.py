@@ -1,10 +1,8 @@
 from ratelimit import limits
 
-from . import throttle
 from .throttle import RequestThrottle
-
-from . import models 
-from .models import Request
+from .models import Request, Flag
+from .handlers import handleFlags
 
 class Client(object):
     def __init__(self, host='https://api.pfp.lgbt/v3', user_agent='pfp_lgbt.py/0.1.0', key=None):
@@ -19,11 +17,9 @@ class Client(object):
 
     def flags(self):
         endpoint = f'{self.host}/flags'
-        return self.throttle.chew(Request(endpoint, self.headers, 'GET', None))
+        response = self.throttle.chew(Request(endpoint, self.headers, 'GET', None, None))
+        return handleFlags(response)
 
     def icon(self, flag):
-        endpoint = f'{self.host}/icon/{flag}'
-        return self.throttle.chew(Request(endpoint, self.headers, 'GET', None))
-
-
-
+        endpoint = f'{self.host}/icon/{flag.name}'
+        return self.throttle.chew(Request(endpoint, self.headers, 'GET', None, None))
