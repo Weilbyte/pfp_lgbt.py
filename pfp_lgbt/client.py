@@ -1,9 +1,16 @@
 from .throttle import RequestThrottle
 from .models import Request, types, styles, formats
-from .handlers import handleFlags, handleIcon, handleImageStatic
+from .handlers import handleFlags, handleIconBytes, handleImageStatic
 from .util import imageToByte
 
 class Client(object):
+    """Object for the API Wrapper client.
+
+    Args:
+        host (str, optional): Base URL of the API Host. Defaults to 'https://api.pfp.lgbt/v3'.
+        user_agent (str, optional): User-Agent to send the requests with. Defaults to 'pfp_lgbt.py/0.1.0'.
+        key (string, optional): API Key, not yet used - serving just as a placeholder. Defaults to None.
+    """
     def __init__(self, host='https://api.pfp.lgbt/v3', user_agent='pfp_lgbt.py/0.1.0', key=None):
         self.host = host
         self.key = key
@@ -11,19 +18,59 @@ class Client(object):
         self.throttle = RequestThrottle(user_agent)
 
     def flags(self):
+        """Retrieve all available flags.
+
+        Returns:
+            list: List of all available flags, as classes
+
+        """
         endpoint = f'{self.host}/flags'
         response = self.throttle.chew(Request(endpoint, 'GET'))
         return handleFlags(response, self.host)
 
-    def icon(self, flag, byte=False):
+    def icon(self, flag):
+        """Retrieves icon for a specific Flag.
+
+        Args:
+            flag (Flag): The Flag to retrieve the icon for.
+
+        Returns:
+            string: The icon URL.
+        """
         endpoint = f'{self.host}/icon/{flag.name}'
-        if byte is not False:
-            response = self.throttle.chew(Request(endpoint, 'GET'))
-            return handleIcon(response)
         return endpoint
 
-    def imageStatic(self, image, itype, istyle, flag='pride', iformat='png', output_file=None):
-        endpoint = f'{self.host}/image/static/{itype}/{istyle}/{flag}.{iformat}'
+    def iconBytes(self, flag):
+        """Retrieves the icon for a specific Flag in bytes.
+
+        Args:
+            flag (Flag): The Flag to retrieve the icon for.
+
+        Returns:
+            bytes: Flag icon in bytes.
+        """
+        endpoint = f'{self.host}/icon/{flag.name}'
+        response = self.throttle.chew(Request(endpoint, 'GET'))
+        return handleIconBytes(response)
+
+    def imageStatic(self, image, itype, istyle, flag, iformat='png', output_file=None):
+        """Generates a static pride image from the API.
+
+        Args:
+            image (string): The bytes, URL link or path of the input image.
+            itype (string): The output image type. Can be 'circle', 'overlay', 'square' or 'background'.
+            istyle (string): The output image style. Can be either 'solid' or 'gradient'.
+            flag (Flag): The Flag to create the image with.
+            iformat (str, optional): The output image format. Can be either 'png' or 'jpg'. Defaults to 'png'.
+            output_file (string, optional): If not None, the output image will also be created under this path. Defaults to None.
+
+        Raises:
+            ValueError: Wrong values inserted for 'itype', 'istyle' or 'iformat'.
+
+        Returns:
+            bytes: The output image in bytes.
+        """
+        endpoint = f'{self.host}/image/static/{itype}/{istyle}/{flag.name}.{iformat}'
         if itype not in types:
             raise ValueError(f'imageStatic: itype must be one of {types}')
         if istyle not in styles:
@@ -35,6 +82,3 @@ class Client(object):
         }
         response = response = self.throttle.chew(Request(endpoint, 'POST', None, files))
         return handleImageStatic(response, output_file)
-        
-
-        
