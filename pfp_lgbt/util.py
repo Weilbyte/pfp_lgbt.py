@@ -73,7 +73,6 @@ def isValidMIME(image):
     response = requests.head(image)
     if 'Content-Type' in response.headers:
         if response.headers['Content-Type'] in mimes:
-            return True 
+            return True
         raise UnsupportedMIMEError(f'Expected {mimes}, got {response.headers["Content-Type"]}')
     raise UnsupportedMIMEError(f'Content-Type not in headers.')
-
