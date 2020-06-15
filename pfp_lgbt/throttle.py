@@ -29,5 +29,4 @@ class RequestThrottle(object):
         else:
             response = requests.request(request.method, headers=request.headers, url=request.endpoint, data=request.body, files=request.files)
             self.__updateRatelimit(response.headers)
-            print('nrr')
-        return ''
+            return response
