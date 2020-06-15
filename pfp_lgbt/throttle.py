@@ -11,9 +11,10 @@ class RequestThrottle(object):
         self.rateReset = 0
     
     def __updateRatelimit(self, headers):
-        self.rateLimit = int(headers['X-Ratelimit-Limit'])
-        self.rateRemaining = int(headers['X-Ratelimit-Remaining'])
-        self.rateReset = int(headers['X-Ratelimit-Reset'])
+        if (('X-Ratelimit-Limit' in headers) and ('X-Ratelimit-Remaining' in headers) and ('X-Ratelimit-Reset' in headers)):
+            self.rateLimit = int(headers['X-Ratelimit-Limit'])
+            self.rateRemaining = int(headers['X-Ratelimit-Remaining'])
+            self.rateReset = int(headers['X-Ratelimit-Reset'])
 
     def __isLimited(self):
         if ((time.time() - self.rateReset) > 0):
