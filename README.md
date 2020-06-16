@@ -48,6 +48,6 @@ client = pfp_lgbt.Client()
 
 flag = pfp_lgbt.Flag(name='nb') # Non-binary flag
 
-client.imageAnimated('https://i.imgur.com/Ypw5pca.png', 'square', flag, output_file='output.gif')
+_ = client.imageAnimated('https://i.imgur.com/Ypw5pca.png', 'square', flag, output_file='output.gif')
 ```
 
