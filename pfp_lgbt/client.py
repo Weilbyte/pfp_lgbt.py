@@ -3,6 +3,8 @@ from .models import Request, types, atypes, styles, formats
 from .handlers import handleFlags, handleIconBytes, handleImageStatic
 from .util import imageToByte
 
+import asyncio
+
 class Client(object):
     """Object for the API Wrapper client.
 
@@ -17,7 +19,10 @@ class Client(object):
 
         self.throttle = RequestThrottle(user_agent)
 
-    def flags(self):
+    async def close(self):
+        await self.throttle.close()
+
+    async def flags(self):
         """Retrieve all available flags.
 
         Returns:
@@ -25,8 +30,8 @@ class Client(object):
 
         """
         endpoint = f'{self.host}/flags'
-        response = self.throttle.chew(Request(endpoint, 'GET'))
-        return handleFlags(response, self.host)
+        response = await self.throttle.chew(Request(endpoint, 'GET'))
+        return await handleFlags(response, self.host)
 
     def icon(self, flag):
         """Retrieves icon for a specific Flag.
@@ -40,7 +45,7 @@ class Client(object):
         endpoint = f'{self.host}/icon/{flag.name}'
         return endpoint
 
-    def iconBytes(self, flag):
+    async def iconBytes(self, flag):
         """Retrieves the icon for a specific Flag in bytes.
 
         Args:
@@ -50,10 +55,10 @@ class Client(object):
             bytes: Flag icon in bytes.
         """
         endpoint = f'{self.host}/icon/{flag.name}'
-        response = self.throttle.chew(Request(endpoint, 'GET'))
-        return handleIconBytes(response)
+        response = await self.throttle.chew(Request(endpoint, 'GET'))
+        return await handleIconBytes(response)
 
-    def imageStatic(self, image, itype, istyle, flag, iformat='png', output_file=None):
+    async def imageStatic(self, image, itype, istyle, flag, iformat='png', output_file=None):
         """Generates a static pride image from the API.
 
         Args:
@@ -78,12 +83,12 @@ class Client(object):
         if iformat not in formats:
             raise ValueError(f'imageStatic: iformat must be one of {formats}')
         files = {
-            'file' : imageToByte(image)
+            'file' : await imageToByte(image, self.throttle.session)
         }
-        response = response = self.throttle.chew(Request(endpoint, 'POST', None, files))
-        return handleImageStatic(response, output_file)
+        response = await self.throttle.chew(Request(endpoint, 'POST', None, files))
+        return await handleImageStatic(response, output_file)
 
-    def imageAnimated(self, image, itype, flag, output_file=None):
+    async def imageAnimated(self, image, itype, flag, output_file=None):
         """Generates an animated pride image from the API.
 
         Args:
@@ -102,7 +107,7 @@ class Client(object):
         if itype not in atypes:
             raise ValueError(f'imageAnimated: itype must be one of {atypes}')
         files = {
-            'file' : imageToByte(image)
+            'file' : imageToByte(image, self.throttle.session)
         }
-        response = response = self.throttle.chew(Request(endpoint, 'POST', None, files))
-        return handleImageStatic(response, output_file)
+        response = await self.throttle.chew(Request(endpoint, 'POST', None, files))
+        return await handleImageStatic(response, output_file)

@@ -22,6 +22,7 @@ class Flag(object):
         tooltip (string, optional): Description/full name of the flag. Defaults to None.
         image (string, optional): URL Link to flag's icon. Defaults to None.
     """
+    __slots__ = ('name', 'default_alpha', 'tooltip', 'image')
     def __init__(self, name, default_alpha=255, tooltip=None, image=None):
         self.name = name
         self.default_alpha = default_alpha

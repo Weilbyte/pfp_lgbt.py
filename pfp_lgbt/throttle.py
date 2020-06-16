@@ -1,5 +1,6 @@
 import time
-import requests
+import aiohttp
+import asyncio
 
 class RequestThrottle(object):
     """Request throttling to abide to rate limit.
@@ -15,6 +16,10 @@ class RequestThrottle(object):
             'User-Agent': user_agent,
             'Accept': '*/*'
         }
+        self.session = aiohttp.ClientSession(headers=self.headers, raise_for_status=True)
+
+    async def close(self):
+        await self.session.close()
 
     def __updateRatelimit(self, headers):
         """Updates the current state of the rate limit.
@@ -39,7 +44,7 @@ class RequestThrottle(object):
             return False
         return True
 
-    def chew(self, request):
+    async def chew(self, request):
         """Processes requests.
 
         Args:
@@ -49,11 +54,13 @@ class RequestThrottle(object):
             requests.Response: Response to our request.
         """
         if (self.__isLimited()):
-            time.sleep(0.1)
-            return self.chew(request)
+            await asyncio.sleep(0.1)
+            return await self.chew(request)
         else:
-            response = requests.request(request.method, headers=self.headers, url=request.endpoint, data=request.body, files=request.files)
+            self.rateRemaining -= 1
+            if request.method == 'POST':
+                response = await self.session.post(request.endpoint, data=request.files)
+            else:
+                response = await self.session.get(request.endpoint)
             self.__updateRatelimit(response.headers)
-            if response.status_code != 200:
-                response.raise_for_status()
             return response

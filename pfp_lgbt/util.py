@@ -1,10 +1,9 @@
-import requests
 from os import path
 
 from .models import mimes
 from .error import UnsupportedMIMEError, ConvertImageError
 
-def byteToImageFile(byte, file):
+async def byteToImageFile(byte, file):
     """Writes bytes to a file.
 
     Args:
@@ -15,7 +14,7 @@ def byteToImageFile(byte, file):
         with open(file, 'wb') as f:
             f.write(byte)
 
-def imageToByte(image):
+async def imageToByte(image, session):
     """Attempts to auto-detect between URL link, bytes and local file path, and converts image to bytes.
 
     Args:
@@ -30,9 +29,9 @@ def imageToByte(image):
     if isinstance(image, (bytes, bytearray)):
         return image
     elif isUrl(image):
-        if isValidMIME(image):
-            response = requests.get(image)
-            return response.content
+        if await isValidMIME(image, session):
+            response = await session.get(image)
+            return await response.read()
     elif path.exists(image):
         try:
             with open(image, 'rb') as img:
@@ -58,7 +57,7 @@ def isUrl(image):
     except:
         return False
 
-def isValidMIME(image):
+async def isValidMIME(image, session):
     """Checks to see whether a URL link leads to a supported image.
 
     Args:
@@ -70,7 +69,7 @@ def isValidMIME(image):
     Returns:
         bool: True if supported, otherwise False.
     """
-    response = requests.head(image)
+    response = await session.head(image)
     if 'Content-Type' in response.headers:
         if response.headers['Content-Type'] in mimes:
             return True
