@@ -30,10 +30,6 @@ class TestStatic(Static):
             assert output_img.read() == result_img, 'File static sample output image does not match'
         os.remove('out.png')
         os.remove('in.png')
-    async def test_static_url(self):
-        await asyncio.sleep(2)
-        circle = await self.client.imageStatic('https://raw.githubusercontent.com/Weilbyte/pfp_lgbt.py/master/test/sample.png', 'circle', 'solid', self.flag, 'png')
-        assert circle == result_img, 'URL static sample image does not match'
     async def test_static_url_error(self):
         await asyncio.sleep(1.5)
         try:
