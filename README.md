@@ -13,6 +13,9 @@ To install the library you can run te following command
 python3 -m pip install pfp_lgbt.py
 ```
 
+### Documentation
+You can find the documentation on this repo's wiki.
+
 ### Examples
 List the names of all available flags. 
 ```py
