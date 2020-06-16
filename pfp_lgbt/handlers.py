@@ -15,7 +15,6 @@ async def handleFlags(response, host):
     json = await response.json()
     flags = []
     for i in json:
-        print(i)
         flag = Flag(i, json[i]['defaultAlpha'], json[i]['tooltip'], f'{host}/icon/{i}')
         flags.append(flag)
     return flags
