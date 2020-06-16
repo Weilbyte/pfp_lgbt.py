@@ -18,11 +18,11 @@ class Static(IsolatedAsyncioTestCase):
 
 class TestStatic(Static):
     async def test_static_byte(self):
-        await asyncio.sleep(1)
+        await asyncio.sleep(1.5)
         circle = await self.client.imageStatic(sample_img, 'circle', 'solid', self.flag, 'png')
         assert circle == result_img, 'Byte static sample image does not match'
     async def test_static_file(self):
-        await asyncio.sleep(1)
+        await asyncio.sleep(2)
         with open('in.png', 'wb') as input_img:
             input_img.write(sample_img)
         await self.client.imageStatic('in.png', 'circle', 'solid', self.flag, 'png', 'out.png')
@@ -30,3 +30,14 @@ class TestStatic(Static):
             assert output_img.read() == result_img, 'File static sample output image does not match'
         os.remove('out.png')
         os.remove('in.png')
+    async def test_static_url(self):
+        await asyncio.sleep(2)
+        circle = await self.client.imageStatic('https://raw.githubusercontent.com/Weilbyte/pfp_lgbt.py/master/test/sample.png', 'circle', 'solid', self.flag, 'png')
+        assert circle == result_img, 'URL static sample image does not match'
+    async def test_static_url_error(self):
+        await asyncio.sleep(1.5)
+        try:
+            await self.client.imageStatic('https://github.com/Weilbyte/pfp_lgbt.py', 'circle', 'solid', self.flag, 'png')
+        except Exception as e:
+            if not isinstance(e, pfp_lgbt.UnsupportedMIMEError):
+                raise AssertionError('Error static sample image does not match UnsupportedMIMEError')
