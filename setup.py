@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='pfp_lgbt',
-    version='1.0.1',
+    version='1.0.2',
     author='Weilbyte',
     description='Python API Wrapper for https://pfp.lgbt/',
     long_description=long_description,
