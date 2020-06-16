@@ -83,7 +83,7 @@ class Client(object):
         if iformat not in formats:
             raise ValueError(f'imageStatic: iformat must be one of {formats}')
         files = {
-            'file' : await imageToByte(image)
+            'file' : await imageToByte(image, self.throttle.session)
         }
         response = await self.throttle.chew(Request(endpoint, 'POST', None, files))
         return await handleImageStatic(response, output_file)
@@ -107,7 +107,7 @@ class Client(object):
         if itype not in atypes:
             raise ValueError(f'imageAnimated: itype must be one of {atypes}')
         files = {
-            'file' : imageToByte(image)
+            'file' : imageToByte(image, self.throttle.session)
         }
         response = await self.throttle.chew(Request(endpoint, 'POST', None, files))
         return await handleImageStatic(response, output_file)

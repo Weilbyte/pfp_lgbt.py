@@ -1,5 +1,4 @@
 import time
-import requests
 import aiohttp
 import asyncio
 
@@ -55,9 +54,10 @@ class RequestThrottle(object):
             requests.Response: Response to our request.
         """
         if (self.__isLimited()):
-            asyncio.sleep(0.1)
-            return self.chew(request)
+            await asyncio.sleep(0.1)
+            return await self.chew(request)
         else:
+            self.rateRemaining -= 1
             if request.method == 'POST':
                 response = await self.session.post(request.endpoint, data=request.files)
             else:
