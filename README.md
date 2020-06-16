@@ -12,3 +12,42 @@ To install the library you can run te following command
 ```py
 python3 -m pip install pfp_lgbt.py
 ```
+
+### Examples
+List the names of all available flags. 
+```py
+import pfp_lgbt
+
+client = pfp_lgbt.Client() 
+
+flags = client.flags() 
+for flag in flags:
+  print(flag.name)
+```
+
+Create a static image from URL, and manually save the bytes as file
+```py
+import pfp_lgbt 
+
+client = pfp_lgbt.Client() 
+
+flag = pfp_lgbt.Flag(name='nb') # Non-binary flag
+
+# `Result` becomes bytes of result image
+result = client.imageStatic('https://i.imgur.com/Ypw5pca.png', 'square', 'solid', flag)
+
+with open('result.png', 'wb') as resfile:
+  resfile.write(result)
+```
+
+Create animated image from URL, and save it to output file
+```py 
+import pfp_lgbt 
+
+client = pfp_lgbt.Client() 
+
+flag = pfp_lgbt.Flag(name='nb') # Non-binary flag
+
+client.imageAnimated('https://i.imgur.com/Ypw5pca.png', 'square', flag, output_file='output.gif')
+```
+
