@@ -6,7 +6,7 @@ async def handleFlags(response, host):
     """Handles returning of Flag response value.
 
     Args:
-        response (requests.Response): Request response
+        response (aiohttp.ClientResponse): Request response
         host (string): Base URL of the API host.
 
     Returns:
@@ -23,7 +23,7 @@ async def handleIconBytes(response):
     """Handles returning of iconBytes response value.
 
     Args:
-        response (requests.Response): Request response
+        response (aiohttp.ClientResponse): Request response
 
     Returns:
         bytes: Icon image in bytes
@@ -34,7 +34,7 @@ async def handleImageStatic(response, file_output):
     """Handles returning of imageStatic response value
 
     Args:
-        response (requests.Response): Request response
+        response (aiohttp.ClientResponse): Request response
         file_output (string): Optional path to save the output image
 
     Returns:

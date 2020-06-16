@@ -20,10 +20,12 @@ class Client(object):
         self.throttle = RequestThrottle(user_agent)
 
     async def close(self):
+        """Closes the aiohttp Client Session. Asynchronous.
+        """
         await self.throttle.close()
 
     async def flags(self):
-        """Retrieve all available flags.
+        """Retrieve all available flags. Asynchronous.
 
         Returns:
             list: List of all available flags, as classes
@@ -46,7 +48,7 @@ class Client(object):
         return endpoint
 
     async def iconBytes(self, flag):
-        """Retrieves the icon for a specific Flag in bytes.
+        """Retrieves the icon for a specific Flag in bytes. Asynchronous.
 
         Args:
             flag (Flag): The Flag to retrieve the icon for.
@@ -59,7 +61,7 @@ class Client(object):
         return await handleIconBytes(response)
 
     async def imageStatic(self, image, itype, istyle, flag, iformat='png', output_file=None):
-        """Generates a static pride image from the API.
+        """Generates a static pride image from the API. Asynchronous.
 
         Args:
             image (string): The bytes, URL link or path of the input image.
@@ -89,7 +91,7 @@ class Client(object):
         return await handleImageStatic(response, output_file)
 
     async def imageAnimated(self, image, itype, flag, output_file=None):
-        """Generates an animated pride image from the API.
+        """Generates an animated pride image from the API. Asynchronous.
 
         Args:
             image (string): The bytes, URL link or path of the input image.
