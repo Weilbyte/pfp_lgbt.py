@@ -1,7 +1,8 @@
 from .models import Flag
 from .util import byteToImageFile
+import asyncio
 
-def handleFlags(response, host):
+async def handleFlags(response, host):
     """Handles returning of Flag response value.
 
     Args:
@@ -11,14 +12,15 @@ def handleFlags(response, host):
     Returns:
         list: List of all available flags, as classes
     """
-    json = response.json()
+    json = await response.json()
     flags = []
     for i in json:
+        print(i)
         flag = Flag(i, json[i]['defaultAlpha'], json[i]['tooltip'], f'{host}/icon/{i}')
         flags.append(flag)
     return flags
 
-def handleIconBytes(response):
+async def handleIconBytes(response):
     """Handles returning of iconBytes response value.
 
     Args:
@@ -27,9 +29,9 @@ def handleIconBytes(response):
     Returns:
         bytes: Icon image in bytes
     """
-    return response.content
+    return await response.read()
 
-def handleImageStatic(response, file_output):
+async def handleImageStatic(response, file_output):
     """Handles returning of imageStatic response value
 
     Args:
@@ -40,7 +42,6 @@ def handleImageStatic(response, file_output):
         bytes: Output image in bytes
     """
     if file_output is not None:
-        byteToImageFile(response.content, file_output)
-    return response.content
+        await byteToImageFile(await response.read(), file_output)
+    return await response.read()
 
-    

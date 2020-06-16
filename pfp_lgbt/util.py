@@ -4,7 +4,7 @@ from os import path
 from .models import mimes
 from .error import UnsupportedMIMEError, ConvertImageError
 
-def byteToImageFile(byte, file):
+async def byteToImageFile(byte, file):
     """Writes bytes to a file.
 
     Args:
@@ -15,7 +15,7 @@ def byteToImageFile(byte, file):
         with open(file, 'wb') as f:
             f.write(byte)
 
-def imageToByte(image):
+async def imageToByte(image):
     """Attempts to auto-detect between URL link, bytes and local file path, and converts image to bytes.
 
     Args:
